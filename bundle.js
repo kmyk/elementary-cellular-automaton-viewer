@@ -165,7 +165,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         return [!!(ruleInt & 1 << 0), !!(ruleInt & 1 << 1), !!(ruleInt & 1 << 2), !!(ruleInt & 1 << 3), !!(ruleInt & 1 << 4), !!(ruleInt & 1 << 5), !!(ruleInt & 1 << 6), !!(ruleInt & 1 << 7)];
     };
-    const rule = parseRule(config.rule);
+    const randomRule = config.rule.toLowerCase() == 'random';
     const body = document.body;
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
@@ -173,7 +173,7 @@ window.addEventListener('DOMContentLoaded', () => {
         context.fillStyle = color;
         context.fillRect(x * scale, y * scale, scale, scale);
     };
-    const app = new ElementaryCellularAutomaton(rule, drawPixel);
+    const app = new ElementaryCellularAutomaton(parseRule(config.rule), drawPixel);
     const resize = () => {
         const h = body.clientHeight;
         const w = body.clientWidth;
@@ -207,7 +207,12 @@ window.addEventListener('DOMContentLoaded', () => {
         click(ev);
     });
     setInterval(() => {
-        app.step();
+        if (randomRule && app.currentLine + 1 >= app.height) {
+            app.rule = parseRule('random');
+            randomizeLine(0);
+        } else {
+            app.step();
+        }
     }, { 'high': 10, 'middle': 60, 'low': 600 }[config.speed]);
 });
 
