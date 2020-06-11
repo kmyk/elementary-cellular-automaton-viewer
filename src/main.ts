@@ -12,7 +12,8 @@ class ElementaryCellularAutomaton {
         this.rule = rule;
         this.drawPixel = drawPixel;
         this.cell = [];
-        this.resize(0, 0);
+        this.currentLine = 0;
+        this.resize(1, 1);
     }
 
     resize(height: number, width: number) {
@@ -26,7 +27,7 @@ class ElementaryCellularAutomaton {
                 this.cell[y].push(false);
             }
         }
-        this.setCurrentLine(0);
+        this.setCurrentLine(this.currentLine);
     }
 
     step() {
@@ -61,12 +62,11 @@ class ElementaryCellularAutomaton {
     }
 
     setCurrentLine(y: number) {
-        this.currentLine = y;
+        this.currentLine = Math.min(this.height - 1, y);
         for (let y = 0; y < this.height; ++ y) {
-            if (y != this.currentLine) {
-                for (let x = 0; x < this.width; ++ x) {
-                    this.drawPixel(y, x, (this.cell[y][x] ? 'grey' : 'white'));
-                }
+            const color = (y == this.currentLine ? 'black' : 'grey');
+            for (let x = 0; x < this.width; ++ x) {
+                this.drawPixel(y, x, (this.cell[y][x] ? color : 'white'));
             }
         }
     }
